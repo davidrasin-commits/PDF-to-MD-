@@ -1,0 +1,5 @@
+.venv*/
+.llama-cpp/
+__pycache__/
+*.pdf
+converted/
