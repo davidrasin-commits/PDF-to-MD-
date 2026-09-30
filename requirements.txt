@@ -1,0 +1,4 @@
+# Python 3.12. Install torch first, from the CUDA 13.0 index (see README).
+marker-pdf==2.0.0
+surya-ocr==0.22.1
+pdftext==0.7.1

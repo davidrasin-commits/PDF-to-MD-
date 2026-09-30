@@ -5,9 +5,7 @@ description: Use when converting book-length PDFs (textbooks, monographs, scanne
 
 # Book PDF -> Markdown
 
-Scripts live alongside this file.
-Six books converted with it (Bendat & Piersol, Nonlinear Oscillations, Percival & Walden per-chapter).
-Reuse those scripts; only copy them out if the target project needs to be self-contained.
+Scripts live alongside this file. Windows + NVIDIA GPU only; install steps in README.md.
 
 Stack: `marker-pdf` 2.0 + `surya-ocr` on `torch+cu130`, in `.venv-marker/`, with a
 llama.cpp CUDA build in `.llama-cpp/`.
@@ -71,7 +69,9 @@ later, silently eating 10 pages of a 533-page book. Do not drop any of them.
    Bad pages get re-run alone and spliced back in (`repair.py`).
 5. **Cite** (`cite.py`) - `python cite.py "prewhiten" -b 11_0 -C 300` returns
    book + enclosing heading + PDF page + *printed* page + excerpt. The
-   PDF-to-printed page offset is per-book and set in `cite.py`.
+   PDF-to-printed page offset is per-book: pass `-o <book-prefix>=<N>`
+   (find N by comparing one `{N}-----` marker with the page number printed on it).
+   Use `-d <src-dir>/converted` when not running from the output folder.
 
 ## Bad text layer: how to spot it and what actually fixes it
 
@@ -112,7 +112,7 @@ citation from the other.
 ## Notes
 
 - Split long books per chapter at the merge step when you want citable units;
-  Percival & Walden is stored that way (`11_0_pp_187_330_...md`).
+  Name them `<chapter>_pp_<first>_<last>_...md` and `cite.py` derives the offset itself.
 - Runtime is 2-3 s/page for books with a text layer (1105 pages took 46 min);
   budget 10 s/page under `--force_ocr`. Only genuine SCAN books approach a
   minute a page. Run in the background and grade chunks as they land.

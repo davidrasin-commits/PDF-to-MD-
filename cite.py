@@ -4,6 +4,8 @@ book, enclosing section heading, PDF page, printed page, excerpt.
     python cite.py "prewhiten"                 # whole corpus
     python cite.py "taper" -b 11_0 -b 12_0     # restrict to books
     python cite.py "outlier" -C 300            # wider excerpt
+    python cite.py "noise" -o Bendat=-12       # printed page = PDF page marker - 12
+    python cite.py "noise" -d path/to/converted
 """
 import argparse
 import re
@@ -12,13 +14,12 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-CONV = Path(__file__).parent / "converted"
 PAGE = re.compile(r"^\{(\d+)\}-{5,}.*$", re.M)
 HEAD = re.compile(r"^(#{1,4})\s+(.*?)\s*$", re.M)
 
-# printed-page offset: printed = page_marker + offset.
-# P&W files carry the printed range in the filename (pp_187_330 -> +187).
-OFFSET = {"Nonlinear_Oscillations": -15, "Bendat_Piersol": -12}
+# printed-page offset: printed = page_marker + offset, set per book with -o.
+# Per-chapter files may carry the printed range in the filename (pp_187_330 -> +187).
+OFFSET = {}
 
 
 def offset_for(stem: str):
@@ -46,10 +47,16 @@ def main(argv):
     ap.add_argument("-C", "--context", type=int, default=200)
     ap.add_argument("-i", "--ignore-case", action="store_true", default=True)
     ap.add_argument("-m", "--max", type=int, default=25)
+    ap.add_argument("-d", "--dir", default="converted", help="folder of converted .md files")
+    ap.add_argument("-o", "--offset", action="append", default=[], metavar="BOOK=N",
+                    help="printed = PDF page marker + N for files whose name starts with BOOK; repeatable")
     args = ap.parse_args(argv)
+    for kv in args.offset:
+        k, v = kv.rsplit("=", 1)
+        OFFSET[k] = int(v)
 
     rx = re.compile(args.pattern, re.I if args.ignore_case else 0)
-    files = sorted(CONV.glob("*.md"))
+    files = sorted(Path(args.dir).glob("*.md"))
     if args.book:
         files = [f for f in files if any(b in f.stem for b in args.book)]
 

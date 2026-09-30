@@ -20,7 +20,7 @@ def lhs_rhs(eq):
 
 
 total = 0
-for f in sorted(Path("converted").glob("*.md")):
+for f in sorted(Path(sys.argv[1] if len(sys.argv) > 1 else "converted").glob("*.md")):
     parts = PAGE.split(f.read_text(encoding="utf-8"))
     pages = {int(parts[i]): parts[i + 1] for i in range(1, len(parts), 2)}
     hits = []

@@ -14,7 +14,7 @@ SIGNS = {
 
 print(f"{'esc$':>6} {'FFFD':>6} {'sup':>6} {'/page':>7}  book")
 rows = []
-for f in sorted(Path("converted").glob("*.md")):
+for f in sorted(Path(sys.argv[1] if len(sys.argv) > 1 else "converted").glob("*.md")):
     txt = f.read_text(encoding="utf-8")
     n = max(1, len(PAGE.findall(txt)))
     c = {k: len(p.findall(txt)) for k, p in SIGNS.items()}

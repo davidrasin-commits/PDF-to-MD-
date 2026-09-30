@@ -13,7 +13,7 @@ JUNKY = re.compile(r"[=^_{}\\]|[0-9]\s*[a-zA-Z]|[a-zA-Z]\s*[0-9]")
 
 print(f"{'inline/pg':>9} {'junk/pg':>8} {'ratio':>7}  book")
 rows = []
-for f in sorted(Path("converted").glob("*.md")):
+for f in sorted(Path(sys.argv[1] if len(sys.argv) > 1 else "converted").glob("*.md")):
     txt = f.read_text(encoding="utf-8")
     n = max(1, len(PAGE.findall(txt)))
     prose = DD.sub("", txt)

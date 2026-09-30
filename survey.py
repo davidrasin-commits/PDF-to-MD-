@@ -1,8 +1,9 @@
-"""Page count + embedded-text check for every PDF under books/."""
+"""Page count + embedded-text check for every PDF under <dir> (default: this folder)."""
+import sys
 from pathlib import Path
 import pypdfium2 as pdfium
 
-ROOT = Path(__file__).parent
+ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent
 pdfs = sorted(p for p in ROOT.rglob("*.pdf") if ".venv-marker" not in p.parts)
 
 print(f"{'pages':>6} {'txt/page':>9}  {'layer':<9} file")
